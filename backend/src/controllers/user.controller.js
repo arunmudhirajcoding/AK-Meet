@@ -6,25 +6,26 @@ import crypto from "crypto"
 import { Meeting } from "../models/meeting.model.js";
 const login = async (req, res) => {
 
-    const { username, password } = req.body;
+    const { username, password } = req.body;// client sends username, password as req in login
 
     if (!username || !password) {
-        return res.status(400).json({ message: "Please Provide" })
+        return res.status(400).json({ message: "Please Provide Username and Password" })//if username or password is missing at client side
     }
 
     try {
-        const user = await User.findOne({ username });
-        if (!user) {
+        const user = await User.findOne({ username });// check user exist with username
+        if (!user) {// if not found
             return res.status(httpStatus.NOT_FOUND).json({ message: "User Not Found" })
         }
 
 
-        let isPasswordCorrect = await bcrypt.compare(password, user.password)
+        let isPasswordCorrect = await bcrypt.compare(password, user.password);//check password is correct or not
 
-        if (isPasswordCorrect) {
-            let token = crypto.randomBytes(20).toString("hex");
+        if (isPasswordCorrect) {// if correct passoword
+            let token = crypto.randomBytes(20).toString("hex");// in db store token as hex string that is 
 
-            user.token = token;
+            user.token = token;// create a token and store in db for perticular user
+            
             await user.save();
             return res.status(httpStatus.OK).json({ token: token })
         } else {
@@ -38,16 +39,16 @@ const login = async (req, res) => {
 
 
 const register = async (req, res) => {
-    const { name, username, password } = req.body;
+    const { name, username, password } = req.body;// client sends name, username, password as req
 
 
     try {
-        const existingUser = await User.findOne({ username });
-        if (existingUser) {
+        const existingUser = await User.findOne({ username });//fetch user with username
+        if (existingUser) {// user already exists 
             return res.status(httpStatus.FOUND).json({ message: "User already exists" });
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // if not exist then create new user with username and password
+        const hashedPassword = await bcrypt.hash(password, 10);// for password encryption
 
         const newUser = new User({
             name: name,
@@ -55,9 +56,9 @@ const register = async (req, res) => {
             password: hashedPassword
         });
 
-        await newUser.save();
+        await newUser.save();// save new user to database
 
-        res.status(httpStatus.CREATED).json({ message: "User Registered" })
+        res.status(httpStatus.CREATED).json({ message: "User Registered" })// send response to client
 
     } catch (e) {
         res.json({ message: `Something went wrong ${e}` })

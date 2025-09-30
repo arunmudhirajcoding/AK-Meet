@@ -24,6 +24,7 @@ export default function LandingPage() {
                         router("/auth")
 
                     }} role='button'>
+                        {/* role for seo performance */}
                         <p>Login</p>
                     </div>
                 </div>

@@ -24,19 +24,19 @@ const defaultTheme = createTheme();
 export default function Authentication() {
 
     
-
+    // for form 
     const [username, setUsername] = React.useState();
     const [password, setPassword] = React.useState();
     const [name, setName] = React.useState();
     const [error, setError] = React.useState();
     const [message, setMessage] = React.useState();
 
-
+    // to create a form
     const [formState, setFormState] = React.useState(0);
-
+    // for snackbar ie toast
     const [open, setOpen] = React.useState(false)
 
-
+    // inside the form handling
     const { handleRegister, handleLogin } = React.useContext(AuthContext);
 
     let handleAuth = async () => {
